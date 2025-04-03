@@ -13,13 +13,13 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: false, unique: true })
   title: string;
 
-  @Column('text')
+  @Column('text', { default: null, nullable: true })
   content: string;
 
-  @ManyToOne(() => User, (user: User) => user.posts)
+  @ManyToOne(() => User, (user: User) => user.posts, { nullable: false })
   author: User;
 
   @CreateDateColumn()

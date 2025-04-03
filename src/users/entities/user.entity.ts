@@ -16,13 +16,13 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: false })
   name: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: false, unique: true })
   email: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: false })
   password: string;
 
   @CreateDateColumn()
@@ -31,10 +31,10 @@ export class User {
   @UpdateDateColumn()
   updatedAt: number;
 
-  @OneToOne(() => Roles)
+  @OneToOne(() => Roles, { nullable: false })
   @JoinColumn()
   role: Roles;
 
-  @OneToMany(() => Post, (post: Post) => post.author)
+  @OneToMany(() => Post, (post: Post) => post.author, { nullable: false })
   posts: Post[];
 }
