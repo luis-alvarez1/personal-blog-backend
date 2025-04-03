@@ -35,6 +35,6 @@ export class User {
   @JoinColumn()
   role: Roles;
 
-  //   @OneToMany(() => Post, (post: Post) => post.author)
+  @OneToMany(() => Post, (post: Post) => post.author)
   posts: Post[];
 }
