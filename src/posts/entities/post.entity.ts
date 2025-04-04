@@ -20,8 +20,7 @@ export class Post {
   content: string;
 
   @ManyToOne(() => User, (user: User) => user.posts, {
-    nullable: false,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   })
   author: User;
 
