@@ -31,10 +31,13 @@ export class User {
   @UpdateDateColumn()
   updatedAt: number;
 
-  @OneToOne(() => Roles, { nullable: false })
+  @OneToOne(() => Roles, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn()
   role: Roles;
 
-  @OneToMany(() => Post, (post: Post) => post.author, { nullable: false })
+  @OneToMany(() => Post, (post: Post) => post.author, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   posts: Post[];
 }

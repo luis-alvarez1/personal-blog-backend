@@ -19,7 +19,10 @@ export class Post {
   @Column('text', { default: null, nullable: true })
   content: string;
 
-  @ManyToOne(() => User, (user: User) => user.posts, { nullable: false })
+  @ManyToOne(() => User, (user: User) => user.posts, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   author: User;
 
   @CreateDateColumn()
