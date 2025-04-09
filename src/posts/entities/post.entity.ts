@@ -21,6 +21,7 @@ export class Post {
 
   @ManyToOne(() => User, (user: User) => user.posts, {
     onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
   })
   author: User;
 

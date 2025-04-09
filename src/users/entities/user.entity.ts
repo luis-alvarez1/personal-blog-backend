@@ -22,7 +22,7 @@ export class User {
   @Column('varchar', { nullable: false, unique: true })
   email: string;
 
-  @Column('varchar', { nullable: false })
+  @Column('varchar', { nullable: false, select: false })
   password: string;
 
   @CreateDateColumn()
@@ -31,12 +31,16 @@ export class User {
   @UpdateDateColumn()
   updatedAt: number;
 
-  @OneToOne(() => Roles, { onDelete: 'SET NULL' })
+  @OneToOne(() => Roles, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn()
   role: Roles;
 
   @OneToMany(() => Post, (post: Post) => post.author, {
     onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
   })
   posts: Post[];
 }
