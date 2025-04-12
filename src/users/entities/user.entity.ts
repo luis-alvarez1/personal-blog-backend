@@ -22,7 +22,7 @@ export class User {
   @Column('varchar', { nullable: false, unique: true })
   email: string;
 
-  @Column('varchar', { nullable: false, select: false })
+  @Column('varchar', { nullable: false })
   password: string;
 
   @CreateDateColumn()

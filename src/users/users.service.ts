@@ -23,10 +23,11 @@ export class UsersService {
   ) {}
 
   private readonly logger = new Logger(UsersService.name);
+
   async create(createUserDto: CreateUserDto) {
     try {
       const exists = await this.usersRepository.findOne({
-        where: { email: createUserDto.email },
+        where: { email: createUserDto.email.toLowerCase() },
       });
       if (exists) {
         throw new BadRequestException('User already exists!');
@@ -41,17 +42,37 @@ export class UsersService {
       }
       const userData: Partial<User> = {
         ...createUserDto,
+        email: createUserDto.email.toLowerCase(),
         role: defaultRole,
         password: hashedPassword,
       };
       const user = this.usersRepository.create(userData);
-      return this.usersRepository.save(user);
+      const userDB = await this.usersRepository.save(user);
+      return this.cleanData(userDB);
     } catch (error) {
       this.logger.log(`Error creating User: ${error}`);
       if (error instanceof BadRequestException) {
         throw error;
       }
       throw new InternalServerErrorException('Failed to create user');
+    }
+  }
+
+  async findOneByEmail(email: string) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: {
+          email: email,
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found!');
+      }
+      return user;
+    } catch (error) {
+      this.logger.log(`Error returning User: ${error}`);
+      throw error;
     }
   }
 
@@ -68,10 +89,8 @@ export class UsersService {
       return user;
     } catch (error) {
       this.logger.log(`Error returning User: ${error}`);
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('Failed to return user');
+
+      throw error;
     }
   }
 
@@ -97,7 +116,7 @@ export class UsersService {
       } as User;
 
       const result = await this.usersRepository.save(newUser);
-      return result;
+      return this.cleanData(result);
     } catch (error) {
       this.logger.error(`Error updating user: ${error}`);
       if (error instanceof BadRequestException) {
@@ -105,6 +124,12 @@ export class UsersService {
       }
       throw new InternalServerErrorException('Failed to update user');
     }
+  }
+
+  cleanData(user: User) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+    return rest;
   }
 
   remove(id: number) {
